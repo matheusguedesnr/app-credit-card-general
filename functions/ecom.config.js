@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, no-multi-spaces, key-spacing, quotes, quote-props */
+/* eslint-disable comma-dangle, no-multi-spaces, key-spacing */
 
 /**
  * Edit base E-Com Plus Application object here.
@@ -6,9 +6,9 @@
  */
 
 const app = {
-  app_id: 9000,
-  title: 'My Awesome E-Com Plus App',
-  slug: 'my-awesome-app',
+  app_id: 11233790,
+  title: 'Pagamento com Crédito',
+  slug: 'pay-with-credit',
   type: 'external',
   state: 'active',
   authentication: true,
@@ -28,19 +28,19 @@ const app = {
      * Triggered to validate and apply discount value, must return discount and conditions.
      * Start editing `routes/ecom/modules/apply-discount.js`
      */
-    // apply_discount:       { enabled: true },
+    apply_discount:       { enabled: true },
 
     /**
      * Triggered when listing payments, must return available payment methods.
      * Start editing `routes/ecom/modules/list-payments.js`
      */
-    // list_payments:        { enabled: true },
+    list_payments:        { enabled: true },
 
     /**
      * Triggered when order is being closed, must create payment transaction and return info.
      * Start editing `routes/ecom/modules/create-transaction.js`
      */
-    // create_transaction:   { enabled: true },
+    create_transaction:   { enabled: true },
   },
 
   /**
@@ -54,44 +54,44 @@ const app = {
       'POST'           // Create procedures to receive webhooks
     ],
     products: [
-      // 'GET',           // Read products with public and private fields
-      // 'POST',          // Create products
-      // 'PATCH',         // Edit products
+      'GET',           // Read products with public and private fields
+      'POST',          // Create products
+      'PATCH',         // Edit products
       // 'PUT',           // Overwrite products
       // 'DELETE',        // Delete products
     ],
     brands: [
-      // 'GET',           // List/read brands with public and private fields
-      // 'POST',          // Create brands
-      // 'PATCH',         // Edit brands
+      'GET',           // List/read brands with public and private fields
+      'POST',          // Create brands
+      'PATCH',         // Edit brands
       // 'PUT',           // Overwrite brands
       // 'DELETE',        // Delete brands
     ],
     categories: [
-      // 'GET',           // List/read categories with public and private fields
-      // 'POST',          // Create categories
-      // 'PATCH',         // Edit categories
+      'GET',           // List/read categories with public and private fields
+      'POST',          // Create categories
+      'PATCH',         // Edit categories
       // 'PUT',           // Overwrite categories
       // 'DELETE',        // Delete categories
     ],
     customers: [
-      // 'GET',           // List/read customers
-      // 'POST',          // Create customers
-      // 'PATCH',         // Edit customers
+      'GET',           // List/read customers
+      'POST',          // Create customers
+      'PATCH',         // Edit customers
       // 'PUT',           // Overwrite customers
       // 'DELETE',        // Delete customers
     ],
     orders: [
-      // 'GET',           // List/read orders with public and private fields
-      // 'POST',          // Create orders
-      // 'PATCH',         // Edit orders
+      'GET',           // List/read orders with public and private fields
+      'POST',          // Create orders
+      'PATCH',         // Edit orders
       // 'PUT',           // Overwrite orders
       // 'DELETE',        // Delete orders
     ],
     carts: [
-      // 'GET',           // List all carts (no auth needed to read specific cart only)
-      // 'POST',          // Create carts
-      // 'PATCH',         // Edit carts
+      'GET',           // List all carts (no auth needed to read specific cart only)
+      'POST',          // Create carts
+      'PATCH',         // Edit carts
       // 'PUT',           // Overwrite carts
       // 'DELETE',        // Delete carts
     ],
@@ -99,6 +99,11 @@ const app = {
     /**
      * Prefer using 'fulfillments' and 'payment_history' subresources to manipulate update order status.
      */
+
+    'customers/loyalty_points_entries': [
+      'all'             // List/read and manage customer active loyalty points
+    ],
+
     'orders/fulfillments': [
       // 'GET',           // List/read order fulfillment and tracking events
       // 'POST',          // Create fulfillment event with new status
@@ -106,7 +111,7 @@ const app = {
     ],
     'orders/payments_history': [
       // 'GET',           // List/read order payments history events
-      // 'POST',          // Create payments history entry with new status
+      'POST',          // Create payments history entry with new status
       // 'DELETE',        // Delete payments history entry
     ],
 
@@ -138,37 +143,7 @@ const app = {
   },
 
   admin_settings: {
-    /**
-     * JSON schema based fields to be configured by merchant and saved to app `data` / `hidden_data`, such as:
-
-     webhook_uri: {
-       schema: {
-         type: 'string',
-         maxLength: 255,
-         format: 'uri',
-         title: 'Notifications URI',
-         description: 'Unique notifications URI available on your Custom App dashboard'
-       },
-       hide: true
-     },
-     token: {
-       schema: {
-         type: 'string',
-         maxLength: 50,
-         title: 'App token'
-       },
-       hide: true
-     },
-     opt_in: {
-       schema: {
-         type: 'boolean',
-         default: false,
-         title: 'Some config option'
-       },
-       hide: false
-     },
-
-     */
+    
   }
 }
 
@@ -179,33 +154,38 @@ const app = {
 
 const procedures = []
 
-/**
- * Uncomment and edit code above to configure `triggers` and receive respective `webhooks`:
-
 const { baseUri } = require('./__env')
 
 procedures.push({
   title: app.title,
 
   triggers: [
-    // Receive notifications when new order is created:
+    /* Receive notifications when new order is created:
     {
       resource: 'orders',
       action: 'create',
     },
+    */
 
-    // Receive notifications when order financial/fulfillment status are set or changed:
-    // Obs.: you probably SHOULD NOT enable the orders triggers below and the one above (create) together.
+    // Receive notifications when order financial/fulfillment status changes:
     {
       resource: 'orders',
       field: 'financial_status',
     },
+
+    // Receive notifications when customer loyalty points entries is edited:
+    {
+      resource: 'customers',
+      field: 'loyalty_points_entries',
+    },
+    /*
     {
       resource: 'orders',
       field: 'fulfillment_status',
     },
+    */
 
-    // Receive notifications when products/variations stock quantity changes:
+    /* Receive notifications when products/variations stock quantity changes:
     {
       resource: 'products',
       field: 'quantity',
@@ -222,11 +202,7 @@ procedures.push({
       action: 'change',
     },
 
-    // Receive notifications when customer is deleted:
-    {
-      resource: 'customers',
-      action: 'delete',
-    },
+    */
 
     // Feel free to create custom combinations with any Store API resource, subresource, action and field.
   ],
@@ -242,9 +218,6 @@ procedures.push({
     }
   ]
 })
-
- * You may also edit `routes/ecom/webhook.js` to treat notifications properly.
- */
 
 exports.app = app
 
